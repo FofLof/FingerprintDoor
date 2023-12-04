@@ -91,6 +91,8 @@ void setup()
 
 void loop()                     // run over and over again
 {
+  double time_final = millis() / 1000;
+  double delta_time = time_final - time_initial;
   switch (doorState) {
     case STANDBY:
       if (digitalRead(BUTTON_PORT) == HIGH) {
@@ -107,9 +109,7 @@ void loop()                     // run over and over again
         time_initial = millis() / 1000;
         doorState = OPEN_DOOR;
       }
-      double time_final = millis() / 1000;
       
-      double delta_time = time_final - time_initial;
       if (delta_time > 10) {
         doorState = STANDBY;
       }
@@ -118,10 +118,7 @@ void loop()                     // run over and over again
       break;
 
     case OPEN_DOOR:
-      double time_final = millis() / 1000;
       myservo.write(HANDLE_DOWN_POSITION);
-
-      double delta_time = time_final - time_initial;
       if (delta_time > 5) {
         doorState = STANDBY;
       }
