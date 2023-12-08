@@ -105,7 +105,7 @@ void loop()                     // run over and over again
 
       break;
     case READING_PRINT:
-      if (isValidFingerprintID() == true) {
+      if (isValidFingerprintID()) {
         time_initial = millis() / 1000;
         doorState = OPEN_DOOR;
       }
@@ -114,7 +114,6 @@ void loop()                     // run over and over again
         doorState = STANDBY;
       }
 
-      
       break;
 
     case OPEN_DOOR:
@@ -127,6 +126,11 @@ void loop()                     // run over and over again
     default:
       Serial.println("Error State");
   }
+  Serial.print("Door State: ");
+  Serial.print(doorState);
+  Serial.print(" Delta Time: ");
+  Serial.println(delta_time);
+
   delay(50);            //don't ned to run this at full speed.
 }
 
@@ -183,20 +187,20 @@ bool isValidFingerprintID() {
     Serial.println("Found a print match!");
   } else if (p == FINGERPRINT_PACKETRECIEVEERR) {
     Serial.println("Communication error");
-    return p;
+    return false;
   } else if (p == FINGERPRINT_NOTFOUND) {
     Serial.println("Did not find a match");
-    return p;
+    return false;
   } else {
     Serial.println("Unknown error");
-    return p;
+    return false;
   }
 
   // found a match!
   Serial.print("Found ID #"); Serial.print(finger.fingerID);
   Serial.print(" with confidence of "); Serial.println(finger.confidence);
 
-  return true;
+  return finger.confidence > 100;
 }
 
 // returns -1 if failed, otherwise returns ID #
